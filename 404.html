@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirection — Genesys Coiffure</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <script>
+    // Redirige les anciennes URLs du site précédent vers les bonnes sections
+    (function () {
+      var p = location.pathname.toLowerCase().replace(/\/+$/, "");
+      var map = {
+        "/services": "/#services", "/prestations": "/#services", "/service": "/#services",
+        "/pricing": "/#pricing", "/tarifs": "/#pricing", "/prix": "/#pricing",
+        "/gallery": "/#gallery", "/galerie": "/#gallery",
+        "/about": "/#about", "/salon": "/#about", "/le-salon": "/#about",
+        "/contact": "/#contact", "/rendez-vous": "/#contact", "/booking": "/#contact",
+        "/blog": "/blog.html", "/journal": "/blog.html"
+      };
+      location.replace(map[p] || "/");
+    })();
+  </script>
+  <meta http-equiv="refresh" content="0; url=/" />
+  <style>
+    html,body{height:100%}
+    body{margin:0;background:#0B0B0C;color:#F4EFE6;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+      display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+    a{color:#ECD6A3}
+  </style>
+</head>
+<body>
+  <p>Redirection en cours… <br /><a href="/">Retour à l'accueil Genesys Coiffure</a></p>
+</body>
+</html>
