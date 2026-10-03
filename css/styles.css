@@ -433,6 +433,7 @@ ul { list-style: none; }
 .info-card h4 { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-soft); margin: var(--sp-3) 0 var(--sp-1); }
 .info-card__addr { color: var(--ivory-dim); line-height: 1.8; }
 .hours li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); color: var(--ivory-dim); }
+.hours__note { margin-top: var(--sp-2); font-size: 0.86rem; color: var(--gold-soft); border-left: 2px solid var(--gold); padding-left: 12px; }
 .info-card__socials { display: flex; flex-wrap: wrap; gap: 10px; margin-top: var(--sp-3); }
 .social {
   padding: 9px 18px; border: 1px solid var(--line); border-radius: 100px; font-size: 0.82rem;
