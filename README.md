@@ -55,6 +55,31 @@ Les tarifs de la section « Tarifs » sont **indicatifs** (basés sur les prix d
 avec la mention « dès … ». Transmettez votre grille tarifaire exacte pour la finaliser — elle se modifie
 dans `index.html` (section `#pricing`) et `js/i18n.js`.
 
+## 🛍️ Boutique
+
+Catalogue de produits avec **commande par WhatsApp / retrait en salon** (aucun paiement en ligne, zéro frais).
+
+- **`boutique.html`** : la page catalogue (filtres par catégorie).
+- Section **« La boutique »** sur l'accueil (produits mis en avant).
+- **Toutes les données produits sont dans `js/shop-data.js`** — c'est le seul fichier à éditer.
+
+**Modifier / ajouter un produit** : ouvrez `js/shop-data.js` et éditez le tableau `products` :
+```js
+{ id: "mon-produit", cat: "soins", price: 14.90, featured: true,
+  img: "assets/images/shop/ma-photo.jpg",
+  name: "Nom du produit",
+  desc: "Description en français.",
+  descEn: "English description." }
+```
+- `cat` : `"soins"`, `"extensions"` ou `"accessoires"`
+- `price` : nombre en euros (ex. `14.90`)
+- `featured: true` : met le produit en avant sur la page d'accueil
+- `img` : déposez votre **vraie photo** dans `assets/images/shop/` et mettez son chemin ici.
+
+> Les visuels actuels (`shop-soins.jpg`, `shop-extensions.jpg`, `shop-accessoires.jpg`) sont des **placeholders** « visuel de remplacement » à remplacer par vos photos produits.
+> Le bouton « Commander » ouvre WhatsApp (numéro défini par `whatsappNumber` dans `js/main.js`) avec le produit pré-rempli.
+> 💳 Pour ajouter un **vrai paiement carte** plus tard (Snipcart / Shopify), dites-le-moi : le catalogue est conçu pour évoluer.
+
 ## 📝 Blog / Journal
 
 Le blog (conseils sur l'entretien des cheveux afro) est 100 % statique :
