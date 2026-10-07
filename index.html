@@ -72,6 +72,7 @@
 
       <nav class="nav__links" aria-label="Navigation principale">
         <a href="#services" data-i18n="nav.services">Prestations</a>
+        <a href="boutique.html" data-i18n="nav.shop">Boutique</a>
         <a href="#gallery" data-i18n="nav.gallery">Galerie</a>
         <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
         <a href="#about" data-i18n="nav.about">Le salon</a>
@@ -100,6 +101,7 @@
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <nav>
       <a href="#services" data-i18n="nav.services">Prestations</a>
+      <a href="boutique.html" data-i18n="nav.shop">Boutique</a>
       <a href="#gallery" data-i18n="nav.gallery">Galerie</a>
       <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
       <a href="#about" data-i18n="nav.about">Le salon</a>
@@ -143,7 +145,7 @@
         </p>
         <div class="hero__cta">
           <a class="btn btn--gold" data-book href="#contact" data-i18n="hero.cta1">Prendre rendez-vous</a>
-          <a class="btn btn--ghost" href="#services" data-i18n="hero.cta2">Découvrir les prestations</a>
+          <a class="btn btn--ghost" href="boutique.html" data-i18n="hero.cta2">Découvrir la boutique</a>
         </div>
       </div>
 
@@ -244,6 +246,22 @@
           </div>
           <div class="service__price"><span data-i18n="common.from">dès</span> <strong>30€</strong></div>
         </article>
+      </div>
+    </section>
+
+    <!-- ===================== BOUTIQUE (accueil) ===================== -->
+    <section class="shop-home section" id="boutique">
+      <div class="section__head">
+        <p class="eyebrow" data-reveal>
+          <span class="eyebrow__line"></span>
+          <span data-i18n="shop.eyebrow">La boutique</span>
+        </p>
+        <h2 class="section__title" data-reveal data-i18n="shop.title">Produits & extensions</h2>
+        <p class="section__lead" data-reveal data-i18n="shop.lead">Soins capillaires, extensions, tresses et accessoires, sélectionnés par le salon pour sublimer vos cheveux à la maison.</p>
+      </div>
+      <div class="shop-grid shop-grid--home" id="shopFeatured"></div>
+      <div class="shop-home__cta" data-reveal>
+        <a class="btn btn--gold" href="boutique.html" data-i18n="shop.home.cta">Voir toute la boutique</a>
       </div>
     </section>
 
@@ -477,6 +495,7 @@
       <p class="footer__tag" data-i18n="footer.tag">Salon de coiffure afro-caribéen · La Ferté-Alais</p>
       <nav class="footer__nav" aria-label="Pied de page">
         <a href="#services" data-i18n="nav.services">Prestations</a>
+        <a href="boutique.html" data-i18n="nav.shop">Boutique</a>
         <a href="#gallery" data-i18n="nav.gallery">Galerie</a>
         <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
         <a href="blog.html" data-i18n="nav.blog">Journal</a>
@@ -499,6 +518,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/shop-data.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
