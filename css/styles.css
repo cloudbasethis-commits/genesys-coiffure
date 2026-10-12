@@ -500,6 +500,16 @@ ul { list-style: none; }
 .article__back:hover { color: var(--gold-bright); }
 
 /* =========================================================
+   BOUTIQUE — MASQUÉE TEMPORAIREMENT
+   Pour réafficher la boutique : supprimer le bloc ci-dessous.
+   (masque les liens de menu/pied de page, le bouton du hero
+    et la section boutique de l'accueil ; les fichiers restent intacts)
+   ========================================================= */
+[data-i18n="nav.shop"],
+[data-i18n="hero.cta2"],
+#boutique { display: none !important; }
+
+/* =========================================================
    BOUTIQUE
    ========================================================= */
 .shop-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: var(--sp-5); }
