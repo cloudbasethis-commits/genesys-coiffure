@@ -2,33 +2,17 @@
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Genesys Coiffure — Salon de coiffure afro à La Ferté-Alais</title>
-  <meta name="description" content="Genesys Coiffure, salon de coiffure afro-caribéen à La Ferté-Alais : tresses, locks, tissage, vanilles, manucure et extensions de cils. Prenez rendez-vous sur WhatsApp." />
+  <meta name="description" content="Genesys Coiffure, salon de coiffure afro-caribéen à La Ferté-Alais : tresses, locks, tissage, vanilles, manucure et extensions de cils. Entrez dans le salon en visite immersive 3D et prenez rendez-vous." />
   <meta name="theme-color" content="#0B0B0C" />
   <link rel="canonical" href="https://genesyscoiffure.store/" />
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Genesys Coiffure — Salon de coiffure afro" />
-  <meta property="og:description" content="Tresses, locks, tissage, vanilles, manucure & extensions de cils à La Ferté-Alais." />
-  <meta property="og:image" content="assets/images/hero.jpg" />
+  <meta property="og:title" content="Genesys Coiffure — Visite immersive" />
+  <meta property="og:description" content="Explorez notre salon de coiffure afro à La Ferté-Alais, en immersion 3D." />
+  <meta property="og:image" content="assets/images/panorama-salon.jpg" />
   <meta property="og:locale" content="fr_FR" />
-
-  <link rel="icon" href="assets/favicon.ico" sizes="any" />
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="manifest" href="assets/site.webmanifest" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <noscript><style>
-    [data-reveal]{opacity:1 !important;transform:none !important;}
-    .hero__title .line__inner{transform:none !important;}
-    .burger{display:none !important;}
-  </style></noscript>
 
   <!-- Local business structured data -->
   <script type="application/ld+json">
@@ -36,7 +20,8 @@
     "@context": "https://schema.org",
     "@type": "HairSalon",
     "name": "Genesys Coiffure",
-    "image": "assets/images/hero.jpg",
+    "image": "https://genesyscoiffure.store/assets/images/panorama-salon.jpg",
+    "url": "https://genesyscoiffure.store/",
     "description": "Salon de coiffure afro-caribéen : tresses, locks, tissage, vanilles, manucure et extensions de cils.",
     "address": {
       "@type": "PostalAddress",
@@ -55,470 +40,504 @@
     }]
   }
   </script>
+
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="assets/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=6" />
+
+  <style>
+    /* ============ EXPLORE — 3D immersive panorama ============ */
+    .exp-body { height: 100%; overflow: hidden; background: var(--noir); }
+    html, body { height: 100%; }
+
+    .stage {
+      position: fixed; inset: 0; overflow: hidden; background: var(--noir);
+      touch-action: none; cursor: grab;
+      -webkit-user-select: none; user-select: none;
+    }
+    .stage.is-grabbing { cursor: grabbing; }
+    #scene { position: absolute; inset: 0; z-index: 1; }
+    #scene canvas { display: block; width: 100% !important; height: 100% !important; }
+
+    .hotspots { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+
+    .stage__veil {
+      position: absolute; inset: 0; pointer-events: none; z-index: 3;
+      background:
+        linear-gradient(to bottom, rgba(11,11,12,.5) 0%, rgba(11,11,12,0) 22%, rgba(11,11,12,0) 60%, rgba(11,11,12,.55) 85%, rgba(11,11,12,1) 100%);
+    }
+    .stage__edge {
+      position: absolute; top: 0; bottom: 0; width: 13vw; max-width: 170px; pointer-events: none; z-index: 3;
+    }
+    .stage__edge--l { left: 0;  background: linear-gradient(to right, rgba(11,11,12,.5), transparent); }
+    .stage__edge--r { right: 0; background: linear-gradient(to left,  rgba(11,11,12,.5), transparent); }
+
+    /* ---- Hotspots (positioned by JS projection) ---- */
+    .hs {
+      position: absolute; top: 0; left: 0; z-index: 5;
+      width: 48px; height: 48px; margin: -24px 0 0 -24px;
+      display: grid; place-items: center; color: var(--ivory); white-space: normal;
+      pointer-events: auto; will-change: transform; transform: translate3d(-200px,-200px,0);
+    }
+    .hs.is-hidden { opacity: 0; pointer-events: none; }
+    .hs__dot {
+      position: relative; width: 18px; height: 18px; border-radius: 50%;
+      background: var(--grad-gold);
+      box-shadow: 0 0 0 3px rgba(10,10,11,.55), 0 0 0 4px rgba(236,214,163,.7),
+                  0 0 16px 2px rgba(200,161,91,.4), 0 4px 14px rgba(0,0,0,.55);
+      transition: transform .35s var(--ease);
+    }
+    .hs__dot::before, .hs__dot::after {
+      content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--gold-soft);
+    }
+    .hs__dot::before { animation: hsPulse 2.6s var(--ease) infinite; }
+    .hs__dot::after  { animation: hsPulse 2.6s var(--ease) infinite 1.3s; }
+    @keyframes hsPulse { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(3.1); opacity: 0; } }
+    /* permanent title label under each point */
+    .hs__label {
+      position: absolute; top: calc(50% + 19px); left: 50%; transform: translateX(-50%) translateY(2px);
+      white-space: nowrap; pointer-events: none;
+      font-family: var(--font-display); font-weight: 500; font-size: .98rem; line-height: 1; color: var(--gold-bright);
+      padding: 8px 14px; border-radius: 4px;
+      background: rgba(8,8,9,.88); border: 1px solid rgba(200,161,91,.6);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.65), 0 0 0 4px rgba(10,10,11,.3); text-shadow: 0 1px 8px rgba(0,0,0,.8);
+      transition: color .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease), transform .3s var(--ease);
+    }
+    .hs__label::before {
+      content: ""; position: absolute; left: 50%; top: -5px; transform: translateX(-50%) rotate(45deg);
+      width: 8px; height: 8px; background: rgba(8,8,9,.88);
+      border-left: 1px solid rgba(200,161,91,.6); border-top: 1px solid rgba(200,161,91,.6);
+    }
+    /* Label flipped ABOVE the dot — for very low hotspots (e.g. the magazine) */
+    .hs--up .hs__label { top: auto; bottom: calc(50% + 19px); }
+    .hs--up .hs__label::before {
+      top: auto; bottom: -5px;
+      border-left: none; border-top: none;
+      border-right: 1px solid rgba(200,161,91,.6); border-bottom: 1px solid rgba(200,161,91,.6);
+    }
+    .hs:hover .hs__dot, .hs:focus-visible .hs__dot { transform: scale(1.25); }
+    .hs:hover .hs__label, .hs:focus-visible .hs__label {
+      color: var(--gold-bright); border-color: var(--gold-soft); background: rgba(12,12,13,.82); transform: translateX(-50%) translateY(0);
+    }
+    .hs:focus-visible { outline: none; }
+    .hs:focus-visible .hs__dot { box-shadow: 0 0 0 3px rgba(236,214,163,.5), 0 4px 14px rgba(0,0,0,.5); }
+    .hs--primary .hs__dot { width: 20px; height: 20px; }
+    .hs--primary .hs__label { border-color: rgba(200,161,91,.5); color: var(--gold-bright); }
+
+    /* Social logos engraved on the bar's marble */
+    .hs--brand { width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+    .hs--brand .brandico {
+      width: 29px; height: 29px; color: var(--gold-bright); opacity: .95;
+      filter: drop-shadow(0 1px 1px rgba(255,255,255,.18)) drop-shadow(0 2px 5px rgba(0,0,0,.75));
+      transition: transform .3s var(--ease), opacity .3s var(--ease), filter .3s var(--ease);
+    }
+    .hs--brand:hover .brandico, .hs--brand:focus-visible .brandico {
+      transform: scale(1.12); opacity: 1;
+      filter: drop-shadow(0 0 9px rgba(236,214,163,.6)) drop-shadow(0 2px 5px rgba(0,0,0,.6));
+    }
+
+
+    /* ---- Top bar ---- */
+    .xbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 16px clamp(16px, 4vw, 40px); padding-top: calc(16px + env(safe-area-inset-top));
+    }
+    .xbar__brand img { height: 46px; width: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,.6)); }
+    .xbar__right { display: flex; align-items: center; gap: clamp(10px, 2vw, 18px); }
+    .lang { display: inline-flex; align-items: center; gap: 6px; color: var(--ivory-dim); }
+    .lang__btn { font-family: var(--font-sans); font-size: .78rem; letter-spacing: .12em; color: var(--ivory-dim); padding: 2px; opacity: .6; transition: opacity .2s, color .2s; }
+    .lang__btn.is-active { color: var(--gold-soft); opacity: 1; }
+    .lang__sep { color: var(--muted); }
+    .xbtn {
+      font-family: var(--font-sans); font-weight: 500; font-size: .76rem; letter-spacing: .14em; text-transform: uppercase;
+      padding: 11px 20px; border-radius: 2px; white-space: nowrap; border: 1px solid var(--line); color: var(--ivory);
+      background: rgba(16,16,18,.42); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      transition: border-color .25s, color .25s, background .25s;
+    }
+    .xbtn:hover { border-color: var(--gold-soft); color: var(--gold-bright); }
+    .xbtn--gold { background: var(--grad-gold); color: #231a0b; border: none; font-weight: 600; box-shadow: 0 10px 30px rgba(200,161,91,.28); }
+    .xbtn--gold:hover { color: #231a0b; filter: brightness(1.06); }
+
+    /* ---- HUD ---- */
+    .hint {
+      position: fixed; left: 50%; bottom: calc(68px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 15;
+      display: flex; align-items: center; gap: 12px; font-family: var(--font-sans); font-weight: 400;
+      font-size: .82rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ivory-dim); transition: opacity .6s var(--ease);
+    }
+    .hint.is-hidden { opacity: 0; pointer-events: none; }
+    .hint__arrow { color: var(--gold-soft); animation: hintSlide 1.8s var(--ease) infinite; display: inline-block; }
+    .hint__arrow--l { animation-direction: reverse; }
+    @keyframes hintSlide { 0%,100% { transform: translateX(0); opacity: .4; } 50% { transform: translateX(5px); opacity: 1; } }
+    .caption {
+      position: fixed; left: clamp(16px, 4vw, 40px); bottom: calc(26px + env(safe-area-inset-bottom)); z-index: 15;
+      font-family: var(--font-sans); font-size: .74rem; letter-spacing: .04em; color: var(--muted); max-width: 46vw;
+    }
+    .caption a { color: var(--gold-soft); text-decoration: none; transition: color .25s var(--ease); }
+    .caption a:hover { color: var(--gold-bright); }
+    .scrub {
+      position: fixed; right: clamp(16px, 4vw, 40px); bottom: calc(30px + env(safe-area-inset-bottom)); z-index: 15;
+      width: clamp(90px, 18vw, 180px); height: 2px; border-radius: 2px; background: rgba(244,239,230,.16);
+    }
+    .scrub span { position: absolute; top: -1px; height: 4px; border-radius: 2px; background: var(--grad-gold); left: 0; width: 34%; }
+
+    /* ---- Loader ---- */
+    .loader { position: fixed; inset: 0; z-index: 60; background: var(--noir); display: grid; place-items: center; transition: opacity .8s var(--ease), visibility .8s; }
+    .loader.is-done { opacity: 0; visibility: hidden; }
+    .loader__inner { text-align: center; width: min(320px, 72vw); }
+    .loader__mark { font-family: var(--font-display); font-weight: 400; font-size: 3.4rem; letter-spacing: .04em; background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 10px; }
+    .loader__name { font-family: var(--font-sans); font-weight: 500; font-size: .76rem; letter-spacing: .4em; text-transform: uppercase; color: var(--ivory-dim); margin-bottom: 26px; }
+    .loader__bar { height: 2px; background: rgba(244,239,230,.12); border-radius: 2px; overflow: hidden; }
+    .loader__bar span { display: block; height: 100%; width: 0; background: var(--grad-gold); transition: width .25s linear; }
+    .loader__pct { margin-top: 14px; font-family: var(--font-sans); font-size: .72rem; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+
+    .stage, .xbar, .hint, .caption, .scrub { opacity: 0; transition: opacity 1s var(--ease) .1s; }
+    body.is-ready .stage, body.is-ready .xbar, body.is-ready .caption, body.is-ready .scrub, body.is-ready .hint { opacity: 1; }
+
+    @media (max-width: 720px) {
+      .xbtn--site { display: none; }
+      .caption { display: none; }
+      .xbar__brand img { height: 38px; }
+      .hint { font-size: .7rem; letter-spacing: .14em; text-align: center; max-width: 86vw; justify-content: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { .hs__dot::before, .hs__dot::after, .hint__arrow { animation: none; } }
+  </style>
 </head>
-<body>
-  <!-- Grain overlay -->
+
+<body class="exp-body">
   <div class="grain" aria-hidden="true"></div>
 
-  <!-- Skip link -->
-  <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__mark">GC</div>
+      <div class="loader__name">Genesys Coiffure</div>
+      <div class="loader__bar"><span id="loaderFill"></span></div>
+      <div class="loader__pct"><span data-i18n="exp.loading">Chargement</span> · <span id="loaderPct">0</span>%</div>
+    </div>
+  </div>
 
-  <!-- ===================== NAV ===================== -->
-  <header class="nav" id="nav">
-    <div class="nav__inner">
-      <a href="#hero" class="brand" aria-label="Genesys Coiffure — accueil">
-        <img src="assets/logo.png" alt="Genesys Coiffure" class="brand__logo" width="579" height="530" />
-      </a>
-
-      <nav class="nav__links" aria-label="Navigation principale">
-        <a href="#services" data-i18n="nav.services">Prestations</a>
-        <a href="boutique.html" data-i18n="nav.shop">Boutique</a>
-        <a href="#gallery" data-i18n="nav.gallery">Galerie</a>
-        <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
-        <a href="#about" data-i18n="nav.about">Le salon</a>
-        <a href="blog.html" data-i18n="nav.blog">Journal</a>
-        <a href="#contact" data-i18n="nav.contact">Contact</a>
-      </nav>
-
-      <div class="nav__actions">
-        <div class="lang" role="group" aria-label="Langue / Language">
-          <button class="lang__btn is-active" data-lang="fr" aria-pressed="true">FR</button>
-          <span class="lang__sep">/</span>
-          <button class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
-        </div>
-        <a class="nav__wa" data-wa href="https://wa.me/33623228831" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.82 9.82 0 001.519 5.26l-.999 3.648 3.969-1.019zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-        </a>
-        <a class="btn btn--gold nav__cta" data-book href="#contact" data-i18n="nav.book">Réserver</a>
-        <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
-          <span></span><span></span>
-        </button>
+  <header class="xbar">
+    <a class="xbar__brand" href="index.html" aria-label="Genesys Coiffure — accueil">
+      <img src="assets/logo.png" alt="Genesys Coiffure" width="579" height="530" />
+    </a>
+    <div class="xbar__right">
+      <div class="lang" role="group" aria-label="Langue / Language">
+        <button class="lang__btn is-active" data-lang="fr" aria-pressed="true">FR</button>
+        <span class="lang__sep">/</span>
+        <button class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
       </div>
+      <a class="xbtn xbtn--gold" href="https://digablopos.fr/book/genesys" target="_blank" rel="noopener" data-i18n="exp.h.book">Prendre rendez-vous</a>
     </div>
   </header>
 
-  <!-- Mobile menu -->
-  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-    <nav>
-      <a href="#services" data-i18n="nav.services">Prestations</a>
-      <a href="boutique.html" data-i18n="nav.shop">Boutique</a>
-      <a href="#gallery" data-i18n="nav.gallery">Galerie</a>
-      <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
-      <a href="#about" data-i18n="nav.about">Le salon</a>
-      <a href="blog.html" data-i18n="nav.blog">Journal</a>
-      <a href="#contact" data-i18n="nav.contact">Contact</a>
-    </nav>
-    <a class="btn btn--gold" data-book href="#contact" data-i18n="nav.book">Réserver</a>
-    <a class="btn btn--wa" data-wa href="https://wa.me/33623228831" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.82 9.82 0 001.519 5.26l-.999 3.648 3.969-1.019zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-      <span>WhatsApp</span>
-    </a>
-  </div>
+  <div class="stage" id="stage" aria-label="Visite immersive du salon">
+    <div id="scene"></div>
 
-  <main id="main">
-    <!-- ===================== HERO ===================== -->
-    <section class="hero" id="hero">
-      <div class="hero__media" aria-hidden="true">
-        <div class="hero__slides">
-          <img class="hero__slide is-active" src="assets/images/ig/ig-11.jpg" alt="" />
-          <img class="hero__slide" src="assets/images/ig/ig-07.jpg" alt="" loading="lazy" />
-          <img class="hero__slide" src="assets/images/ig/ig-09.jpg" alt="" loading="lazy" />
-          <img class="hero__slide" src="assets/images/ig/ig-06.jpg" alt="" loading="lazy" />
-          <img class="hero__slide" src="assets/images/ig/ig-12.jpg" alt="" loading="lazy" />
-          <img class="hero__slide" src="assets/images/ig/ig-05.jpg" alt="" loading="lazy" />
-        </div>
-        <div class="hero__scrim"></div>
-      </div>
-
-      <div class="hero__content">
-        <p class="eyebrow hero__eyebrow hero__eyebrow--plain">
-          <span data-i18n="hero.eyebrow">Salon afro-caribéen · La Ferté-Alais</span>
-        </p>
-        <h1 class="hero__title">
-          <span class="line"><span class="line__inner" data-i18n="hero.title1">L’art de la</span></span>
-          <span class="line"><span class="line__inner line--accent" data-i18n="hero.title2">coiffure afro</span></span>
-          <span class="line"><span class="line__inner" data-i18n="hero.title3">sublimé</span></span>
-        </h1>
-        <p class="hero__sub" data-i18n="hero.sub">
-          Tresses, locks, tissage, vanilles, manucure et extensions de cils.
-          Un savoir-faire d’exception au service de votre beauté.
-        </p>
-        <div class="hero__cta">
-          <a class="btn btn--gold" data-book href="#contact" data-i18n="hero.cta1">Prendre rendez-vous</a>
-          <a class="btn btn--ghost" href="boutique.html" data-i18n="hero.cta2">Découvrir la boutique</a>
-        </div>
-      </div>
-
-      <a href="#services" class="hero__scroll" aria-label="Défiler">
-        <span data-i18n="hero.scroll">Défiler</span>
-        <span class="hero__scroll-line"></span>
-      </a>
-    </section>
-
-    <!-- ===================== MARQUEE ===================== -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span>Tresses</span><span class="dot">✦</span>
-        <span>Locks</span><span class="dot">✦</span>
-        <span>Tissage</span><span class="dot">✦</span>
-        <span>Vanilles</span><span class="dot">✦</span>
-        <span>Crochet</span><span class="dot">✦</span>
-        <span>Manucure</span><span class="dot">✦</span>
-        <span>Extensions de cils</span><span class="dot">✦</span>
-        <span>Tresses</span><span class="dot">✦</span>
-        <span>Locks</span><span class="dot">✦</span>
-        <span>Tissage</span><span class="dot">✦</span>
-        <span>Vanilles</span><span class="dot">✦</span>
-        <span>Crochet</span><span class="dot">✦</span>
-        <span>Manucure</span><span class="dot">✦</span>
-        <span>Extensions de cils</span><span class="dot">✦</span>
-      </div>
-    </div>
-
-    <!-- ===================== SERVICES ===================== -->
-    <section class="services section" id="services">
-      <div class="section__head">
-        <p class="eyebrow" data-reveal>
-          <span class="eyebrow__line"></span>
-          <span data-i18n="services.eyebrow">Nos prestations</span>
-        </p>
-        <h2 class="section__title" data-reveal data-i18n="services.title">Un service pour chaque style</h2>
-      </div>
-
-      <div class="services__list">
-        <!-- 01 -->
-        <article class="service" data-reveal>
-          <span class="service__num">01</span>
-          <div class="service__media"><img src="assets/images/service-women.jpg" alt="Coiffure femme — tresses" loading="lazy" /></div>
-          <div class="service__body">
-            <h3 class="service__title" data-i18n="svc.women.t">Coiffure Femme</h3>
-            <p class="service__desc" data-i18n="svc.women.d">Tresses, locks, tissage, vanilles, crochet. Des coiffures protectrices et élégantes, pensées pour durer.</p>
-          </div>
-          <div class="service__price"><span data-i18n="common.from">dès</span> <strong>20€</strong></div>
-        </article>
-        <!-- 02 -->
-        <article class="service" data-reveal>
-          <span class="service__num">02</span>
-          <div class="service__media"><img src="assets/images/service-men.jpg" alt="Coiffure homme — dégradé" loading="lazy" /></div>
-          <div class="service__body">
-            <h3 class="service__title" data-i18n="svc.men.t">Coiffure Homme</h3>
-            <p class="service__desc" data-i18n="svc.men.d">Coupes modernes, dégradés nets, taille et contour de barbe. Précision et finitions soignées.</p>
-          </div>
-          <div class="service__price"><span data-i18n="common.from">dès</span> <strong>5€</strong></div>
-        </article>
-        <!-- 03 -->
-        <article class="service" data-reveal>
-          <span class="service__num">03</span>
-          <div class="service__media"><img src="assets/images/service-kids.jpg" alt="Coiffure enfant" loading="lazy" /></div>
-          <div class="service__body">
-            <h3 class="service__title" data-i18n="svc.kids.t">Enfants</h3>
-            <p class="service__desc" data-i18n="svc.kids.d">Tresses, coupes et soins doux, dans une ambiance rassurante et bienveillante pour les plus jeunes.</p>
-          </div>
-          <div class="service__price"><span data-i18n="common.from">dès</span> <strong>10€</strong></div>
-        </article>
-        <!-- 04 -->
-        <article class="service" data-reveal>
-          <span class="service__num">04</span>
-          <div class="service__media"><img src="assets/images/service-manicure.jpg" alt="Manucure" loading="lazy" /></div>
-          <div class="service__body">
-            <h3 class="service__title" data-i18n="svc.nails.t">Manucure</h3>
-            <p class="service__desc" data-i18n="svc.nails.d">Vernis, gel, nail art et soins des ongles. Des mains sublimées jusque dans le moindre détail.</p>
-          </div>
-          <div class="service__price"><span data-i18n="common.from">dès</span> <strong>5€</strong></div>
-        </article>
-        <!-- 05 -->
-        <article class="service" data-reveal>
-          <span class="service__num">05</span>
-          <div class="service__media"><img src="assets/images/service-lashes.jpg" alt="Extensions de cils" loading="lazy" /></div>
-          <div class="service__body">
-            <h3 class="service__title" data-i18n="svc.lashes.t">Extensions de cils</h3>
-            <p class="service__desc" data-i18n="svc.lashes.d">Pose cil à cil et volume russe pour un regard intense et naturel, adapté à votre morphologie.</p>
-          </div>
-          <div class="service__price"><span data-i18n="common.from">dès</span> <strong>70€</strong></div>
-        </article>
-        <!-- 06 -->
-        <article class="service" data-reveal>
-          <span class="service__num">06</span>
-          <div class="service__media"><img src="assets/images/service-care.jpg" alt="Soins et beauté" loading="lazy" /></div>
-          <div class="service__body">
-            <h3 class="service__title" data-i18n="svc.care.t">Soins & Beauté</h3>
-            <p class="service__desc" data-i18n="svc.care.d">Soins profonds, shampoing et coiffage. Nourrir, réparer et faire rayonner votre fibre capillaire.</p>
-          </div>
-          <div class="service__price"><span data-i18n="common.from">dès</span> <strong>30€</strong></div>
-        </article>
-      </div>
-    </section>
-
-    <!-- ===================== BOUTIQUE (accueil) ===================== -->
-    <section class="shop-home section" id="boutique">
-      <div class="section__head">
-        <p class="eyebrow" data-reveal>
-          <span class="eyebrow__line"></span>
-          <span data-i18n="shop.eyebrow">La boutique</span>
-        </p>
-        <h2 class="section__title" data-reveal data-i18n="shop.title">Produits & extensions</h2>
-        <p class="section__lead" data-reveal data-i18n="shop.lead">Soins capillaires, extensions, tresses et accessoires, sélectionnés par le salon pour sublimer vos cheveux à la maison.</p>
-      </div>
-      <div class="shop-grid shop-grid--home" id="shopFeatured"></div>
-      <div class="shop-home__cta" data-reveal>
-        <a class="btn btn--gold" href="boutique.html" data-i18n="shop.home.cta">Voir toute la boutique</a>
-      </div>
-    </section>
-
-    <!-- ===================== GALLERY ===================== -->
-    <section class="gallery section" id="gallery">
-      <div class="section__head">
-        <p class="eyebrow" data-reveal>
-          <span class="eyebrow__line"></span>
-          <span data-i18n="gallery.eyebrow">Nos réalisations</span>
-        </p>
-        <h2 class="section__title" data-reveal data-i18n="gallery.title">La galerie</h2>
-        <p class="section__lead" data-reveal data-i18n="gallery.lead">Un aperçu de notre travail. Chaque coiffure est unique, pensée pour vous.</p>
-      </div>
-
-      <div class="gallery__grid" id="galleryGrid">
-        <button class="gal gal--tall" data-reveal><img src="assets/images/ig/ig-11.jpg" alt="Cornrows ornés de perles et cauris" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-02.jpg" alt="Nattes collées feed-in" loading="lazy" /></button>
-        <button class="gal gal--wide" data-reveal><img src="assets/images/ig/ig-06.jpg" alt="Cornrows motif graphique" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-07.jpg" alt="Tresses avec mèches blondes" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-05.jpg" alt="Nattes collées dos" loading="lazy" /></button>
-        <button class="gal gal--tall" data-reveal><img src="assets/images/ig/ig-09.jpg" alt="Twists sénégalais" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-01.jpg" alt="Dégradé et motif rasé" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-04.jpg" alt="Box braids enfant" loading="lazy" /></button>
-        <button class="gal gal--wide" data-reveal><img src="assets/images/ig/ig-12.jpg" alt="Boucles crochet" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-03.jpg" alt="Dégradé homme" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-08.jpg" alt="Tresses homme" loading="lazy" /></button>
-        <button class="gal" data-reveal><img src="assets/images/ig/ig-10.jpg" alt="Tresses et dégradé" loading="lazy" /></button>
-      </div>
-      <p class="gallery__ig" data-reveal>
-        <span data-i18n="gallery.follow">Suivez nos dernières réalisations sur Instagram</span>
-        <a data-social-inline="instagram" href="https://www.instagram.com/genesys_coiffure" target="_blank" rel="noopener">@genesys_coiffure</a>
-      </p>
-    </section>
-
-    <!-- ===================== PRICING ===================== -->
-    <section class="pricing section" id="pricing">
-      <div class="section__head">
-        <p class="eyebrow" data-reveal>
-          <span class="eyebrow__line"></span>
-          <span data-i18n="pricing.eyebrow">Nos tarifs</span>
-        </p>
-        <h2 class="section__title" data-reveal data-i18n="pricing.title">Transparence & sérénité</h2>
-        <p class="section__lead" data-reveal data-i18n="pricing.lead">Tarifs indicatifs selon la longueur et le volume. Le prix exact vous est confirmé avant le rendez-vous.</p>
-      </div>
-
-      <div class="pricing__tabs" role="tablist" aria-label="Catégories de tarifs">
-        <button class="ptab is-active" role="tab" aria-selected="true" data-tab="women" data-i18n="pricing.tab.women">Femme</button>
-        <button class="ptab" role="tab" aria-selected="false" data-tab="men" data-i18n="pricing.tab.men">Homme</button>
-        <button class="ptab" role="tab" aria-selected="false" data-tab="kids" data-i18n="pricing.tab.kids">Enfants</button>
-        <button class="ptab" role="tab" aria-selected="false" data-tab="nails" data-i18n="pricing.tab.nails">Manucure</button>
-        <button class="ptab" role="tab" aria-selected="false" data-tab="lashes" data-i18n="pricing.tab.lashes">Cils</button>
-        <button class="ptab" role="tab" aria-selected="false" data-tab="care" data-i18n="pricing.tab.care">Soins</button>
-      </div>
-
-      <div class="pricing__panels">
-        <!-- Women -->
-        <div class="ppanel is-active" data-panel="women">
-          <ul class="price-list">
-            <li><span class="pl__name" data-i18n="p.w1">Tresses / Box braids</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 40€</span></li>
-            <li><span class="pl__name" data-i18n="p.w2">Vanilles / Twists</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 35€</span></li>
-            <li><span class="pl__name" data-i18n="p.w3">Crochet braids</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 30€</span></li>
-            <li><span class="pl__name" data-i18n="p.w4">Tissage</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 50€</span></li>
-            <li><span class="pl__name" data-i18n="p.w5">Pose / entretien de locks</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 20€</span></li>
-            <li><span class="pl__name" data-i18n="p.w6">Installation complète de locks</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.upto">jusqu’à</span> 300€</span></li>
-          </ul>
-        </div>
-        <!-- Men -->
-        <div class="ppanel" data-panel="men">
-          <ul class="price-list">
-            <li><span class="pl__name" data-i18n="p.m1">Coupe homme</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 15€</span></li>
-            <li><span class="pl__name" data-i18n="p.m2">Dégradé</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 18€</span></li>
-            <li><span class="pl__name" data-i18n="p.m3">Contour / finitions</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 5€</span></li>
-            <li><span class="pl__name" data-i18n="p.m4">Taille de barbe</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 10€</span></li>
-          </ul>
-        </div>
-        <!-- Kids -->
-        <div class="ppanel" data-panel="kids">
-          <ul class="price-list">
-            <li><span class="pl__name" data-i18n="p.k1">Coupe enfant</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 10€</span></li>
-            <li><span class="pl__name" data-i18n="p.k2">Tresses enfant</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 15€</span></li>
-            <li><span class="pl__name" data-i18n="p.k3">Soin doux</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 12€</span></li>
-          </ul>
-        </div>
-        <!-- Nails -->
-        <div class="ppanel" data-panel="nails">
-          <ul class="price-list">
-            <li><span class="pl__name" data-i18n="p.n1">Vernis classique</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 5€</span></li>
-            <li><span class="pl__name" data-i18n="p.n2">Pose gel / semi-permanent</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 25€</span></li>
-            <li><span class="pl__name" data-i18n="p.n3">Nail art</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 10€</span></li>
-            <li><span class="pl__name" data-i18n="p.n4">Dépose</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 5€</span></li>
-          </ul>
-        </div>
-        <!-- Lashes -->
-        <div class="ppanel" data-panel="lashes">
-          <ul class="price-list">
-            <li><span class="pl__name" data-i18n="p.l1">Pose cil à cil</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 70€</span></li>
-            <li><span class="pl__name" data-i18n="p.l2">Volume russe</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 90€</span></li>
-            <li><span class="pl__name" data-i18n="p.l3">Remplissage</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 40€</span></li>
-          </ul>
-        </div>
-        <!-- Care -->
-        <div class="ppanel" data-panel="care">
-          <ul class="price-list">
-            <li><span class="pl__name" data-i18n="p.c1">Soin profond</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 30€</span></li>
-            <li><span class="pl__name" data-i18n="p.c2">Shampoing & coiffage</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 30€</span></li>
-            <li><span class="pl__name" data-i18n="p.c3">Rituel hydratation</span><span class="pl__dot"></span><span class="pl__val"><span data-i18n="common.from">dès</span> 35€</span></li>
-          </ul>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ===================== ABOUT ===================== -->
-    <section class="about section" id="about">
-      <div class="about__grid">
-        <div class="about__media" data-reveal>
-          <img src="assets/images/salon-interior.jpg" alt="Le salon Genesys Coiffure" loading="lazy" data-parallax />
-        </div>
-        <div class="about__text">
-          <p class="eyebrow" data-reveal>
-            <span class="eyebrow__line"></span>
-            <span data-i18n="about.eyebrow">Le salon</span>
-          </p>
-          <h2 class="section__title" data-reveal data-i18n="about.title">Un lieu, une passion, votre beauté</h2>
-          <p data-reveal data-i18n="about.p1">Chez Genesys Coiffure, chaque cliente et chaque client est unique. Nous mettons notre savoir-faire de la coiffure afro-caribéenne au service de votre style, dans une atmosphère chaleureuse et soignée.</p>
-          <p data-reveal data-i18n="about.p2">Des coiffures protectrices aux finitions les plus précises, nous prenons le temps qu’il faut pour un résultat qui vous ressemble et qui dure.</p>
-
-          <div class="about__stats" data-reveal>
-            <div class="stat"><span class="stat__num" data-count="6">6</span><span class="stat__label" data-i18n="about.s1">prestations signatures</span></div>
-            <div class="stat"><span class="stat__num" data-count="100">100</span><span class="stat__plus">%</span><span class="stat__label" data-i18n="about.s2">fait main, avec soin</span></div>
-            <div class="stat"><span class="stat__num" data-count="6">6</span><span class="stat__label" data-i18n="about.s3">jours sur 7 à vos côtés</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== CONTACT ===================== -->
-    <section class="contact section" id="contact">
-      <div class="section__head">
-        <p class="eyebrow" data-reveal>
-          <span class="eyebrow__line"></span>
-          <span data-i18n="contact.eyebrow">Rendez-vous</span>
-        </p>
-        <h2 class="section__title" data-reveal data-i18n="contact.title">Réservez votre moment</h2>
-        <p class="section__lead" data-reveal data-i18n="contact.lead">Réservez en ligne en quelques secondes, 24h/24. Ou envoyez-nous une demande rapide sur WhatsApp.</p>
-      </div>
-
-      <a class="booking-online" data-reveal data-book href="https://digablopos.fr/book/genesys" target="_blank" rel="noopener">
-        <span class="booking-online__pulse"></span>
-        <span class="booking-online__text">
-          <strong data-i18n="contact.online.t">Réservation en ligne</strong>
-          <small data-i18n="contact.online.d">Choisissez votre prestation, votre date et votre horaire en direct</small>
-        </span>
-        <span class="booking-online__arrow" aria-hidden="true">→</span>
+    <div class="hotspots" id="hotspots">
+      <a class="hs" data-u="0.07"  data-v="0.30" href="galerie.html" aria-label="Nos réalisations">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.gallery">Nos réalisations</span>
       </a>
 
-      <div class="contact__divider"><span data-i18n="contact.or">ou</span></div>
+      <!-- Logos réseaux incrustés, centrés sur la plaque de marbre du bar -->
+      <a class="hs hs--brand" data-u="0.328" data-v="0.655" href="https://www.instagram.com/genesys_coiffure" target="_blank" rel="noopener" aria-label="Genesys Coiffure sur Instagram">
+        <svg class="brandico" viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="9" y="9" width="30" height="30" rx="9" fill="none" stroke="currentColor" stroke-width="3"/>
+          <circle cx="24" cy="24" r="7.6" fill="none" stroke="currentColor" stroke-width="3"/>
+          <circle cx="32.6" cy="15.4" r="2.3" fill="currentColor"/>
+        </svg>
+      </a>
+      <a class="hs hs--brand" data-u="0.350" data-v="0.655" href="https://www.tiktok.com/@genesys.coiffure" target="_blank" rel="noopener" aria-label="Genesys Coiffure sur TikTok">
+        <svg class="brandico" viewBox="0 0 48 48" aria-hidden="true"><path fill="currentColor" d="M33.4 8c.6 4.3 3 6.9 7.1 7.2v4.7c-2.4.2-4.5-.6-6.9-2v8.9c0 11.3-12.3 14.8-17.3 6.7-3.2-5.2-1.3-14.3 8.9-14.7v5c-.8.1-1.6.3-2.4.6-2.3.8-3.6 2.3-3.2 4.9.6 4.9 9.6 6.4 8.9-3.2V8h4.9z"/></svg>
+      </a>
+      <a class="hs hs--brand" data-u="0.372" data-v="0.655" href="https://wa.me/33623228831" target="_blank" rel="noopener" aria-label="Genesys Coiffure sur WhatsApp">
+        <svg class="brandico" viewBox="-8 -8 40 40" aria-hidden="true"><path fill="currentColor" d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.82 9.82 0 001.519 5.26l-.999 3.648 3.969-1.019zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+      </a>
 
-      <div class="contact__grid">
-        <!-- Form -->
-        <form class="booking" id="bookingForm" data-reveal novalidate>
-          <div class="field">
-            <label for="bk-name" data-i18n="form.name">Votre nom</label>
-            <input type="text" id="bk-name" name="name" autocomplete="name" required />
-          </div>
-          <div class="field">
-            <label for="bk-service" data-i18n="form.service">Prestation souhaitée</label>
-            <select id="bk-service" name="service">
-              <option value="Coiffure Femme" data-i18n="svc.women.t">Coiffure Femme</option>
-              <option value="Coiffure Homme" data-i18n="svc.men.t">Coiffure Homme</option>
-              <option value="Enfants" data-i18n="svc.kids.t">Enfants</option>
-              <option value="Manucure" data-i18n="svc.nails.t">Manucure</option>
-              <option value="Extensions de cils" data-i18n="svc.lashes.t">Extensions de cils</option>
-              <option value="Soins & Beauté" data-i18n="svc.care.t">Soins & Beauté</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="bk-date" data-i18n="form.date">Date souhaitée</label>
-            <input type="date" id="bk-date" name="date" />
-          </div>
-          <div class="field">
-            <label for="bk-msg" data-i18n="form.msg">Message (optionnel)</label>
-            <textarea id="bk-msg" name="message" rows="3"></textarea>
-          </div>
-          <button type="submit" class="btn btn--gold btn--block">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.82 9.82 0 001.519 5.26l-.999 3.648 3.969-1.019zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            <span data-i18n="form.submit">Envoyer sur WhatsApp</span>
-          </button>
-          <p class="booking__alt">
-            <span data-i18n="form.or">ou appelez-nous au</span>
-            <a href="tel:+33623228831">06&nbsp;23&nbsp;22&nbsp;88&nbsp;31</a>
-          </p>
-        </form>
+      <!-- Horloge "horaires" — alignée sur la même ligne que les logos sociaux -->
+      <a class="hs hs--brand" data-u="0.306" data-v="0.655" href="horaires.html" aria-label="Horaires & accès">
+        <svg class="brandico" viewBox="-1 -1 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 7.2v5l3.4 2"/>
+        </svg>
+      </a>
+      <a class="hs" data-u="0.155" data-v="0.57" href="tarifs.html#femmes" aria-label="Coiffure Femme">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.women">Coiffure Femme</span>
+      </a>
+      <a class="hs hs--primary" data-u="0.375" data-v="0.45" href="https://digablopos.fr/book/genesys" target="_blank" rel="noopener" aria-label="Prendre rendez-vous">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.book">Prendre rendez-vous</span>
+      </a>
 
-        <!-- Info -->
-        <aside class="contact__info" data-reveal>
-          <div class="info-card">
-            <h3 data-i18n="contact.visit">Nous trouver</h3>
-            <p class="info-card__addr">
-              1 rue André Branche<br />91590 La Ferté-Alais<br />France
-            </p>
-            <h4 data-i18n="contact.hours">Horaires</h4>
-            <ul class="hours">
-              <li><span data-i18n="days.monsat">Lundi — Samedi</span><span>10:00 — 19:00</span></li>
-              <li><span data-i18n="days.sun">Dimanche</span><span data-i18n="hours.sun.val">Sur rendez-vous</span></li>
-            </ul>
-            <p class="hours__note" data-i18n="hours.surcharge">Avant 10h ou le dimanche : supplément de 10&nbsp;€.</p>
-            <div class="info-card__socials">
-              <a class="social" data-social="whatsapp" href="https://wa.me/33623228831" target="_blank" rel="noopener" aria-label="WhatsApp">WhatsApp</a>
-              <a class="social" data-social="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
-              <a class="social" data-social="tiktok" href="#" target="_blank" rel="noopener" aria-label="TikTok">TikTok</a>
-            </div>
-          </div>
-          <div class="map">
-            <iframe
-              title="Carte — Genesys Coiffure"
-              src="https://maps.google.com/maps?q=1%20rue%20Andr%C3%A9%20Branche%2091590%20La%20Fert%C3%A9-Alais&t=&z=15&ie=UTF8&iwloc=&output=embed"
-              loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          </div>
-        </aside>
-      </div>
-    </section>
-  </main>
+      <!-- Lien Tarifs, juste au-dessus du logo du comptoir -->
+      <a class="hs" data-u="0.333" data-v="0.16" href="tarifs.html" aria-label="Nos tarifs">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.tarifs">Nos tarifs</span>
+      </a>
+      <a class="hs" data-u="0.515" data-v="0.58" href="tarifs.html#hommes" aria-label="Coiffure Homme">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.men">Coiffure Homme</span>
+      </a>
+      <a class="hs" data-u="0.67"  data-v="0.39" href="boutique.html" aria-label="Produits et extensions">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.shop">Produits & extensions</span>
+      </a>
+      <a class="hs" data-u="0.80"  data-v="0.49" href="tarifs.html#soins" aria-label="Soins et beauté">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.care">Soins & Beauté</span>
+      </a>
+      <a class="hs" data-u="0.925" data-v="0.55" href="tarifs.html#manucure" aria-label="Manucure et extensions de cils">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.nails">Manucure & Cils</span>
+      </a>
 
-  <!-- ===================== FOOTER ===================== -->
-  <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__brand">
-        <img src="assets/logo.png" alt="Genesys Coiffure" class="brand__logo brand__logo--lg" width="579" height="530" />
-      </div>
-      <p class="footer__tag" data-i18n="footer.tag">Salon de coiffure afro-caribéen · La Ferté-Alais</p>
-      <nav class="footer__nav" aria-label="Pied de page">
-        <a href="#services" data-i18n="nav.services">Prestations</a>
-        <a href="boutique.html" data-i18n="nav.shop">Boutique</a>
-        <a href="#gallery" data-i18n="nav.gallery">Galerie</a>
-        <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
-        <a href="blog.html" data-i18n="nav.blog">Journal</a>
-        <a href="#contact" data-i18n="nav.contact">Contact</a>
-      </nav>
-      <p class="footer__legal">© <span id="year"></span> Genesys Coiffure. <span data-i18n="footer.rights">Tous droits réservés.</span></p>
+      <!-- Point posé sur le magazine Vogue (dans la photo) — renvoie au journal -->
+      <a class="hs hs--up" data-u="0.735" data-v="0.82" href="blog.html" aria-label="Le journal — notre blog">
+        <span class="hs__dot"></span><span class="hs__label" data-i18n="exp.h.journal">Le journal</span>
+      </a>
     </div>
-  </footer>
 
-  <!-- ===================== LIGHTBOX ===================== -->
-  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image agrandie">
-    <button class="lightbox__close" id="lbClose" aria-label="Fermer">&times;</button>
-    <button class="lightbox__nav lightbox__prev" id="lbPrev" aria-label="Précédent">&#8249;</button>
-    <img class="lightbox__img" id="lbImg" src="" alt="" />
-    <button class="lightbox__nav lightbox__next" id="lbNext" aria-label="Suivant">&#8250;</button>
+    <div class="stage__veil" aria-hidden="true"></div>
+    <div class="stage__edge stage__edge--l" aria-hidden="true"></div>
+    <div class="stage__edge stage__edge--r" aria-hidden="true"></div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <div class="hint" id="hint" aria-hidden="true">
+    <span class="hint__arrow hint__arrow--l">‹</span>
+    <span data-i18n="exp.hint">Glissez pour explorer</span>
+    <span class="hint__arrow">›</span>
+  </div>
+  <div class="caption">© 2026 Genesys Coiffure. Développé par <a href="https://digablo.fr" target="_blank" rel="noopener">digablo</a></div>
+  <div class="scrub" aria-hidden="true"><span id="scrubFill"></span></div>
+
+  <noscript><style>.loader{display:none}.stage,.xbar{opacity:1!important}.hint{display:none}</style></noscript>
+
   <script src="js/i18n.js?v=2"></script>
-  <script src="js/shop-data.js"></script>
-  <script src="js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var $ = function (s, c) { return (c || document).querySelector(s); };
+    var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var narrow = window.matchMedia("(max-width: 720px)").matches;
+    // Mouse-follow only on a real pointer AND a wide screen; phones / narrow views use drag.
+    var followMode = window.matchMedia("(hover: hover) and (pointer: fine)").matches && !narrow;
+
+    /* ---------- i18n ---------- */
+    var I18N = window.GENESYS_I18N || {};
+    var html = document.documentElement;
+    var lang = localStorage.getItem("genesys-lang") ||
+      ((navigator.language || "fr").toLowerCase().indexOf("en") === 0 ? "en" : "fr");
+    function t(k) { var d = I18N[lang] || I18N.fr || {}; return d[k] != null ? d[k] : k; }
+    function applyLang(l) {
+      if (!I18N[l]) l = "fr";
+      lang = l; localStorage.setItem("genesys-lang", l); html.setAttribute("lang", l);
+      $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.getAttribute("data-i18n")); });
+      $$(".lang__btn").forEach(function (b) {
+        var on = b.getAttribute("data-lang") === l;
+        b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
+    $$(".lang__btn").forEach(function (b) { b.addEventListener("click", function () { applyLang(b.getAttribute("data-lang")); }); });
+    if (followMode) {
+      var hv = document.querySelector(".hint [data-i18n]"); if (hv) hv.setAttribute("data-i18n", "exp.hint.move");
+    }
+    applyLang(lang);
+
+    /* ========== 3D immersive panorama (Three.js) ========== */
+    var IMG = "assets/images/panorama-salon.jpg?v=2";
+    var IMG_W = 2172, IMG_H = 724, ASPECT = IMG_W / IMG_H;
+
+    // Cylinder wall the photo is wrapped on. Camera sits at the axis and rotates.
+    var ARC = THREE.Math.degToRad(172);     // horizontal angular width of the scene
+    var R = 12;                              // cylinder radius
+    var VSTRETCH = 1.3;                      // extra vertical height -> room to look up/down
+    var H = (R * ARC) / ASPECT * VSTRETCH;   // wall height
+    var VARC = 2 * Math.atan((H / 2) / R);   // vertical angular size of the photo
+
+    var stage = $("#stage"), mount = $("#scene");
+    var scrubFill = $("#scrubFill"), hint = $("#hint"), hotspots = $$(".hs");
+
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b0b0c);
+    var camera = new THREE.PerspectiveCamera(46, 2, 0.1, 100);
+    camera.rotation.order = "YXZ";
+    camera.position.set(0, 0, 0);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    mount.appendChild(renderer.domElement);
+
+    var mesh = null;
+    var texLoaded = false;
+
+    function buildMesh(tex) {
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      // BackSide mirrors the texture horizontally — flip it back so the room reads correctly.
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.repeat.x = -1; tex.offset.x = 1;
+      // Open cylinder arc, centred so its middle (theta = PI) faces -Z (the camera's forward).
+      var geo = new THREE.CylinderGeometry(R, R, H, 160, 1, true, Math.PI - ARC / 2, ARC);
+      var mat = new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide });
+      mesh = new THREE.Mesh(geo, mat);
+      scene.add(mesh);
+    }
+
+    // Camera limits so we never look past the edges of the photo.
+    var yawLimit, pitchLimit, pitchDown;
+    function computeLimits() {
+      var vFov = THREE.Math.degToRad(camera.fov);
+      var hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
+      yawLimit = Math.max(0, (ARC / 2) - (hFov / 2) * 0.92);
+      pitchLimit = Math.max(0, (VARC / 2) - (vFov / 2) * 0.96);
+      // allow looking a little further DOWN than up (reach the table / magazine) without cutting the ceiling
+      pitchDown = Math.max(pitchLimit, (VARC / 2) - (vFov / 2) * 0.64);
+    }
+
+    var curYaw = 0, curPitch = 0, tgtYaw = 0, tgtPitch = 0;
+    var ease = reduce ? 1 : 0.07, interacted = false;
+
+    function resize() {
+      var w = stage.clientWidth, h = stage.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      computeLimits();
+      tgtYaw = clamp(tgtYaw, -yawLimit, yawLimit);
+      tgtPitch = clamp(tgtPitch, -pitchDown, pitchLimit);
+    }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    /* ---- Hotspot projection ---- */
+    var _v = new THREE.Vector3();
+    function placeHotspots() {
+      var w = stage.clientWidth, h = stage.clientHeight;
+      for (var i = 0; i < hotspots.length; i++) {
+        var el = hotspots[i];
+        var u = parseFloat(el.getAttribute("data-u"));
+        var v = parseFloat(el.getAttribute("data-v"));
+        var yaw = (u - 0.5) * ARC;          // column -> horizontal angle
+        var pitch = (0.5 - v) * VARC;        // row -> vertical angle
+        // direction in world space (-Z forward), matching the cylinder mapping
+        _v.set(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.cos(yaw) * Math.cos(pitch)).multiplyScalar(R);
+        var fwd = _v.clone().normalize();
+        _v.project(camera);
+        // camera forward dot point-direction: hide if behind / out of view
+        var camDir = new THREE.Vector3(0, 0, -1).applyEuler(camera.rotation);
+        var inFront = fwd.dot(camDir) > 0.18;
+        var x = (_v.x * 0.5 + 0.5) * w;
+        var y = (-_v.y * 0.5 + 0.5) * h;
+        if (inFront && _v.x >= -1.2 && _v.x <= 1.2 && _v.y >= -1.2 && _v.y <= 1.2) {
+          el.classList.remove("is-hidden");
+          el.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+        } else {
+          el.classList.add("is-hidden");
+        }
+      }
+    }
+
+    function hideHint() { if (hint && !hint.classList.contains("is-hidden")) hint.classList.add("is-hidden"); }
+
+    /* ---- Input: mouse-follow (desktop) + drag (all) ---- */
+    if (followMode) {
+      window.addEventListener("mousemove", function (e) {
+        if (dragging) return;
+        interacted = true; hideHint();
+        var nx = clamp(e.clientX / stage.clientWidth, 0, 1);
+        var ny = clamp(e.clientY / stage.clientHeight, 0, 1);
+        tgtYaw = clamp((0.5 - nx) * 2 * yawLimit, -yawLimit, yawLimit);
+        tgtPitch = clamp((0.5 - ny) * 2 * pitchDown, -pitchDown, pitchLimit);
+      }, { passive: true });
+    }
+
+    var dragging = false, moved = false, lastX = 0, lastY = 0, dYaw = 0, dPitch = 0, lastT = 0;
+    stage.addEventListener("pointerdown", function (e) {
+      dragging = true; moved = false; stage.classList.add("is-grabbing");
+      lastX = e.clientX; lastY = e.clientY; lastT = performance.now(); dYaw = dPitch = 0;
+    });
+    window.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (Math.abs(dx) + Math.abs(dy) > 3) { if (!moved) { moved = true; try { stage.setPointerCapture(e.pointerId); } catch (_) {} } interacted = true; hideHint(); }
+      // drag sensitivity: full stage width ~ the full yaw span
+      var kx = (2 * yawLimit) / stage.clientWidth * 1.1;
+      var ky = (2 * pitchDown) / stage.clientHeight * 1.1;
+      tgtYaw = clamp(tgtYaw + dx * kx, -yawLimit, yawLimit);
+      tgtPitch = clamp(tgtPitch + dy * ky, -pitchDown, pitchLimit);
+      var now = performance.now(), dt = now - lastT || 16;
+      dYaw = dx * kx / dt * 16; dPitch = dy * ky / dt * 16;
+      lastX = e.clientX; lastY = e.clientY; lastT = now;
+    }, { passive: true });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false; stage.classList.remove("is-grabbing");
+      if (!reduce && !followMode && Math.abs(dYaw) > 0.0005) {
+        (function glide() {
+          dYaw *= 0.93; tgtYaw = clamp(tgtYaw + dYaw, -yawLimit, yawLimit);
+          if (Math.abs(dYaw) > 0.0002) requestAnimationFrame(glide);
+        })();
+      }
+      if (moved) {
+        var killer = function (ev) { ev.preventDefault(); ev.stopPropagation(); };
+        stage.addEventListener("click", killer, true);
+        setTimeout(function () { stage.removeEventListener("click", killer, true); }, 0);
+      }
+    }
+    window.addEventListener("pointerup", endDrag);
+    window.addEventListener("pointercancel", endDrag);
+
+    window.addEventListener("keydown", function (e) {
+      var s = yawLimit * 0.5;
+      if (e.key === "ArrowRight") { interacted = true; hideHint(); tgtYaw = clamp(tgtYaw + s, -yawLimit, yawLimit); }
+      else if (e.key === "ArrowLeft") { interacted = true; hideHint(); tgtYaw = clamp(tgtYaw - s, -yawLimit, yawLimit); }
+    });
+    $$(".hs").forEach(function (h) { h.addEventListener("focus", function () { interacted = true; hideHint(); }); });
+
+    window.addEventListener("resize", resize);
+
+    /* ---- Loop ---- */
+    function render() {
+      camera.rotation.y = curYaw;
+      camera.rotation.x = curPitch;
+      renderer.render(scene, camera);
+      if (yawLimit > 0) {
+        var p = (curYaw + yawLimit) / (2 * yawLimit);
+        var track = scrubFill.parentNode.clientWidth, wdt = Math.max(28, track * 0.28);
+        scrubFill.style.width = wdt + "px"; scrubFill.style.left = (p * (track - wdt)) + "px";
+      }
+      placeHotspots();
+    }
+    (function loop() {
+      if (!interacted && !reduce && texLoaded) {
+        tgtYaw += 0.0012; if (tgtYaw > yawLimit || tgtYaw < -yawLimit) tgtYaw = clamp(tgtYaw, -yawLimit, yawLimit);
+      }
+      curYaw += (tgtYaw - curYaw) * ease;
+      curPitch += (tgtPitch - curPitch) * ease;
+      if (texLoaded) render();
+      requestAnimationFrame(loop);
+    })();
+
+    /* ---- Loader ---- */
+    var loader = $("#loader"), fill = $("#loaderFill"), pct = $("#loaderPct");
+    var p = 0, loaded = false;
+    function setP(v) { p = v; fill.style.width = v + "%"; pct.textContent = Math.round(v); }
+    function reveal() {
+      resize(); document.body.classList.add("is-ready"); loader.classList.add("is-done");
+      if (!reduce) setTimeout(hideHint, 4800);
+    }
+    var ramp = setInterval(function () {
+      var cap = loaded ? 100 : 90;
+      var n = p + (cap - p) * 0.12 + 0.6; if (n >= cap) n = cap; setP(n);
+      if (p >= 100) { clearInterval(ramp); setTimeout(reveal, 240); }
+    }, 60);
+
+    new THREE.TextureLoader().load(IMG, function (tex) {
+      buildMesh(tex); texLoaded = true; loaded = true; resize();
+    }, undefined, function () { loaded = true; });
+
+    setTimeout(function () { loaded = true; }, 6000);
+  })();
+  </script>
 </body>
 </html>
