@@ -466,7 +466,8 @@
       tgtYaw = clamp(tgtYaw + dx * kx, -yawLimit, yawLimit);
       tgtPitch = clamp(tgtPitch + dy * ky, -pitchDown, pitchLimit);
       var now = performance.now(), dt = now - lastT || 16;
-      dYaw = dx * kx / dt * 16; dPitch = dy * ky / dt * 16;
+      // cap the flick velocity so a fast swipe doesn't fling the camera across too fast
+      dYaw = clamp(dx * kx / dt * 16, -0.028, 0.028); dPitch = dy * ky / dt * 16;
       lastX = e.clientX; lastY = e.clientY; lastT = now;
     }, { passive: true });
     function endDrag(e) {
@@ -474,7 +475,7 @@
       dragging = false; stage.classList.remove("is-grabbing");
       if (!reduce && !followMode && Math.abs(dYaw) > 0.0005) {
         (function glide() {
-          dYaw *= 0.93; tgtYaw = clamp(tgtYaw + dYaw, -yawLimit, yawLimit);
+          dYaw *= 0.90; tgtYaw = clamp(tgtYaw + dYaw, -yawLimit, yawLimit);
           if (Math.abs(dYaw) > 0.0002) requestAnimationFrame(glide);
         })();
       }
