@@ -100,7 +100,7 @@
      NAV scroll state
      ------------------------------------------------------ */
   var nav = $("#nav");
-  function onScroll() { nav.classList.toggle("is-scrolled", window.scrollY > 10); }
+  function onScroll() { if (nav) nav.classList.toggle("is-scrolled", window.scrollY > 10); }
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 

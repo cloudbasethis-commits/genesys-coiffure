@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>La galerie — Genesys Coiffure</title>
+  <meta name="description" content="La galerie de Genesys Coiffure : tresses, locks, tissage, vanilles et coiffures afro réalisées au salon de La Ferté-Alais." />
+  <meta name="theme-color" content="#0B0B0C" />
+  <link rel="canonical" href="https://genesyscoiffure.store/galerie.html" />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="assets/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=6" />
+  <style>
+    /* Lightbox */
+    .lb { position: fixed; inset: 0; z-index: 200; display: none; place-items: center;
+      background: rgba(8,8,9,.9); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: 5vw; }
+    .lb.is-open { display: grid; }
+    .lb img { max-width: 92vw; max-height: 88vh; border-radius: 6px; box-shadow: 0 30px 90px rgba(0,0,0,.7); }
+    .lb__close { position: fixed; top: 22px; right: 26px; width: 46px; height: 46px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--ivory); font-size: 1.4rem;
+      background: rgba(16,16,18,.6); border: 1px solid var(--line); cursor: pointer; }
+    .lb__close:hover { color: var(--gold-bright); border-color: var(--gold-soft); }
+    .gal { cursor: zoom-in; }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="subhead">
+    <a class="subhead__back" href="explore.html" aria-label="Retour au showroom">
+      <span class="a" aria-hidden="true">‹</span><span data-i18n="nav.showroom">Retour au showroom</span>
+    </a>
+    <div class="subhead__right">
+      <div class="lang" role="group" aria-label="Langue / Language">
+        <button class="lang__btn is-active" data-lang="fr" aria-pressed="true">FR</button>
+        <span class="lang__sep">/</span>
+        <button class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="subhead__brand" href="explore.html" aria-label="Genesys Coiffure">
+        <img src="assets/logo.png" alt="Genesys Coiffure" width="579" height="530" />
+      </a>
+    </div>
+  </header>
+
+  <main class="subpage">
+    <section class="gallery section" id="gallery" style="padding-top:0;">
+      <div class="section__head">
+        <p class="eyebrow"><span class="eyebrow__line"></span><span data-i18n="gallery.eyebrow">Nos réalisations</span></p>
+        <h1 class="section__title" data-i18n="gallery.title">La galerie</h1>
+        <p class="section__lead" data-i18n="gallery.lead">Nos vraies créations, réalisées au salon. Chaque coiffure est unique, pensée pour vous.</p>
+      </div>
+
+      <div class="gallery__grid" id="galleryGrid">
+        <button class="gal gal--tall" type="button"><img src="assets/images/ig/ig-11.jpg" alt="Cornrows ornés de perles et cauris" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-02.jpg" alt="Nattes collées feed-in" loading="lazy" /></button>
+        <button class="gal gal--wide" type="button"><img src="assets/images/ig/ig-06.jpg" alt="Cornrows motif graphique" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-07.jpg" alt="Tresses avec mèches blondes" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-05.jpg" alt="Nattes collées dos" loading="lazy" /></button>
+        <button class="gal gal--tall" type="button"><img src="assets/images/ig/ig-09.jpg" alt="Twists sénégalais" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-01.jpg" alt="Dégradé et motif rasé" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-04.jpg" alt="Box braids enfant" loading="lazy" /></button>
+        <button class="gal gal--wide" type="button"><img src="assets/images/ig/ig-12.jpg" alt="Boucles crochet" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-03.jpg" alt="Dégradé homme" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-08.jpg" alt="Tresses homme" loading="lazy" /></button>
+        <button class="gal" type="button"><img src="assets/images/ig/ig-10.jpg" alt="Tresses et dégradé" loading="lazy" /></button>
+      </div>
+
+      <p class="gallery__ig">
+        <span data-i18n="gallery.follow">Suivez nos dernières réalisations sur Instagram</span>
+        <a href="https://www.instagram.com/genesys_coiffure" target="_blank" rel="noopener">@genesys_coiffure</a>
+      </p>
+
+      <div class="tarifs-cta">
+        <a class="btn btn--gold" href="https://digablopos.fr/book/genesys" target="_blank" rel="noopener" data-i18n="nav.book">Réserver</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer--mini">
+    <div class="footer__inner">
+      <p class="footer__name">Genesys Coiffure</p>
+      <p class="footer__tag" data-i18n="footer.tag">Salon de coiffure afro-caribéen · La Ferté-Alais</p>
+      <p class="footer__legal">© <span id="year"></span> Genesys Coiffure. <span data-i18n="footer.rights">Tous droits réservés.</span></p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lb" id="lb" aria-hidden="true">
+    <button class="lb__close" id="lbClose" aria-label="Fermer">✕</button>
+    <img id="lbImg" src="" alt="" />
+  </div>
+
+  <script src="js/i18n.js?v=2"></script>
+  <script src="js/subpage.js"></script>
+  <script>
+    (function () {
+      var lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg');
+      function open(src, alt) { lbImg.src = src; lbImg.alt = alt || ''; lb.classList.add('is-open'); lb.setAttribute('aria-hidden', 'false'); }
+      function close() { lb.classList.remove('is-open'); lb.setAttribute('aria-hidden', 'true'); lbImg.src = ''; }
+      Array.prototype.forEach.call(document.querySelectorAll('.gal'), function (b) {
+        b.addEventListener('click', function () { var img = b.querySelector('img'); if (img) open(img.src, img.alt); });
+      });
+      document.getElementById('lbClose').addEventListener('click', close);
+      lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+      window.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    })();
+  </script>
+</body>
+</html>
