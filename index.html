@@ -461,13 +461,13 @@
       var dx = e.clientX - lastX, dy = e.clientY - lastY;
       if (Math.abs(dx) + Math.abs(dy) > 3) { if (!moved) { moved = true; try { stage.setPointerCapture(e.pointerId); } catch (_) {} } interacted = true; hideHint(); }
       // drag sensitivity: full stage width ~ the full yaw span
-      var kx = (2 * yawLimit) / stage.clientWidth * 1.1;
-      var ky = (2 * pitchDown) / stage.clientHeight * 1.1;
+      var kx = (2 * yawLimit) / stage.clientWidth * 0.9;
+      var ky = (2 * pitchDown) / stage.clientHeight * 0.9;
       tgtYaw = clamp(tgtYaw + dx * kx, -yawLimit, yawLimit);
       tgtPitch = clamp(tgtPitch + dy * ky, -pitchDown, pitchLimit);
       var now = performance.now(), dt = now - lastT || 16;
       // cap the flick velocity so a fast swipe doesn't fling the camera across too fast
-      dYaw = clamp(dx * kx / dt * 16, -0.028, 0.028); dPitch = dy * ky / dt * 16;
+      dYaw = clamp(dx * kx / dt * 16, -0.015, 0.015); dPitch = dy * ky / dt * 16;
       lastX = e.clientX; lastY = e.clientY; lastT = now;
     }, { passive: true });
     function endDrag(e) {
@@ -475,7 +475,7 @@
       dragging = false; stage.classList.remove("is-grabbing");
       if (!reduce && !followMode && Math.abs(dYaw) > 0.0005) {
         (function glide() {
-          dYaw *= 0.90; tgtYaw = clamp(tgtYaw + dYaw, -yawLimit, yawLimit);
+          dYaw *= 0.88; tgtYaw = clamp(tgtYaw + dYaw, -yawLimit, yawLimit);
           if (Math.abs(dYaw) > 0.0002) requestAnimationFrame(glide);
         })();
       }
